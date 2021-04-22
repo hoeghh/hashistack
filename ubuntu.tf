@@ -1,21 +1,13 @@
 
 terraform {
  required_version = ">= 0.13"
-
   required_providers {
-  #  libvirt = {
-  #    source  = "./plugins/registry.terraform.io/dmacvicar/libvirt"
-  #    version = "0.6.3"
-      libvirt = {
-        version = "0.6.3"
-        source = "registry.terraform.io/dmacvicar/libvirt"
-      }
-  #  }
+    libvirt = {
+      version = "0.6.3"
+      source = "registry.terraform.io/dmacvicar/libvirt"
+    }
   }
-
-
 }
-
 
 # instance the provider
 provider "libvirt" {
@@ -32,7 +24,7 @@ resource "libvirt_pool" "ubuntu" {
 resource "libvirt_volume" "ubuntu-qcow2" {
   name   = "ubuntu-qcow2"
   pool   = libvirt_pool.ubuntu.name
-  source = "https://cloud-images.ubuntu.com/releases/xenial/release/ubuntu-16.04-server-cloudimg-amd64-disk1.img"
+  source = "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64-disk-kvm.img"
   format = "qcow2"
 }
 

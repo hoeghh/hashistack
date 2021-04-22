@@ -14,17 +14,17 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-resource "libvirt_pool" "ubuntu" {
-  name = "ubuntu"
+resource "libvirt_pool" "ubuntu2" {
+  name = "ubuntu2"
   type = "dir"
-  path = "/tmp/terraform-provider-libvirt-pool-ubuntu"
+  path = "/tmp/terraform-provider-libvirt-pool-ubuntu2"
 }
 
 # We fetch the latest ubuntu release image from their mirrors
 resource "libvirt_volume" "ubuntu-qcow2" {
   name   = "ubuntu-qcow2"
-  pool   = libvirt_pool.ubuntu.name
-  source = "https://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64-disk-kvm.img"
+  pool   = libvirt_pool.ubuntu2.name
+  source = "http://cloud-images.ubuntu.com/releases/bionic/release-20191008/ubuntu-18.04-server-cloudimg-amd64.img"
   format = "qcow2"
 }
 
@@ -44,7 +44,7 @@ resource "libvirt_cloudinit_disk" "commoninit" {
   name           = "commoninit.iso"
   user_data      = data.template_file.user_data.rendered
   network_config = data.template_file.network_config.rendered
-  pool           = libvirt_pool.ubuntu.name
+  pool           = libvirt_pool.ubuntu2.name
 }
 
 # Create the machine

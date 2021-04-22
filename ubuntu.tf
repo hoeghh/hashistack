@@ -57,6 +57,7 @@ resource "libvirt_domain" "domain-ubuntu" {
 
   network_interface {
     network_name = "default"
+    wait_for_lease = true
   }
 
   # IMPORTANT: this is a known bug on cloud images, since they expect a console
@@ -83,4 +84,23 @@ resource "libvirt_domain" "domain-ubuntu" {
     listen_type = "address"
     autoport    = true
   }
+
+  provisioner "remote-exec" {
+    connection {
+      host     = "${self.network_interface.0.addresses.0}"
+      type     = "ssh"
+      user     = "hashicorp"
+      password = "eficode"
+    }
+#    connection {
+#      type     = "ssh"
+#      user     = "hashicorp"
+#      password = "${var.root_password}"
+#      host     = "${var.host}"
+#    }
+    inline = [
+      "cloud-init status --wait",
+    ]
+  }
 }
+

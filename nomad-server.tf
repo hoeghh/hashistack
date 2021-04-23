@@ -21,7 +21,7 @@ resource "libvirt_cloudinit_disk" "server-init" {
 
 data "template_file" "server_user_data" {
   count = var.nomad_server_count
-  template = file("${path.module}/cloud_init.cfg")
+  template = file("${path.module}/templates/cloud_init.cfg")
   vars = {
     HOSTNAME = upper(format(
       "%v-%v",
@@ -33,7 +33,7 @@ data "template_file" "server_user_data" {
 
 data "template_file" "server_network_config" {
   count = var.nomad_server_count
-  template = file("${path.module}/network_config.cfg")
+  template = file("${path.module}/templates/network_config.cfg")
   vars = {
     HOSTNAME = upper(format(
       "%v-%v",

@@ -1,59 +1,32 @@
-
-terraform {
- required_version = ">= 0.13"
-  required_providers {
-    libvirt = {
-      version = "0.6.3"
-      source = "registry.terraform.io/dmacvicar/libvirt"
-    }
-  }
-}
-
-# instance the provider
-provider "libvirt" {
-  uri = "qemu:///system"
-}
-
-resource "libvirt_pool" "ubuntu2" {
-  name = "ubuntu2"
-  type = "dir"
-  path = "/tmp/terraform-provider-libvirt-pool-ubuntu2"
-}
-
 # We fetch the latest ubuntu release image from their mirrors
-resource "libvirt_volume" "ubuntu-qcow2" {
-  name   = "ubuntu-qcow2"
-  pool   = libvirt_pool.ubuntu2.name
-  source = "http://cloud-images.ubuntu.com/releases/bionic/release-20191008/ubuntu-18.04-server-cloudimg-amd64.img"
+resource "libvirt_volume" "nomad-server-qcow2" {
+  count  = var.nomad_server_count
+  name   = "nomad-server-qcow2-${count.index}"
+  pool   = libvirt_pool.nomad.name
+  source = var.os_image
   format = "qcow2"
-}
-
-data "template_file" "user_data" {
-  template = file("${path.module}/cloud_init.cfg")
-}
-
-data "template_file" "network_config" {
-  template = file("${path.module}/network_config.cfg")
 }
 
 # for more info about paramater check this out
 # https://github.com/dmacvicar/terraform-provider-libvirt/blob/master/website/docs/r/cloudinit.html.markdown
 # Use CloudInit to add our ssh-key to the instance
 # you can add also meta_data field
-resource "libvirt_cloudinit_disk" "commoninit" {
-  name           = "commoninit.iso"
+resource "libvirt_cloudinit_disk" "server-init" {
+  count          = var.nomad_server_count
+  name           = "server-init-${count.index}.iso"
   user_data      = data.template_file.user_data.rendered
   network_config = data.template_file.network_config.rendered
-  pool           = libvirt_pool.ubuntu2.name
+  pool           = libvirt_pool.nomad.name
 }
 
 # Create the machine
-resource "libvirt_domain" "domain-ubuntu" {
-  name   = "ubuntu-terraform"
+resource "libvirt_domain" "domain-nomad-server" {
+  count  = var.nomad_server_count
+  name   = "nomad-server-${count.index}"
   memory = "512"
   vcpu   = 1
 
-  cloudinit = libvirt_cloudinit_disk.commoninit.id
+  cloudinit = libvirt_cloudinit_disk.server-init[count.index].id
 
   network_interface {
     network_name = "default"
@@ -76,7 +49,7 @@ resource "libvirt_domain" "domain-ubuntu" {
   }
 
   disk {
-    volume_id = libvirt_volume.ubuntu-qcow2.id
+    volume_id = libvirt_volume.nomad-server-qcow2[count.index].id
   }
 
   graphics {
@@ -103,4 +76,3 @@ resource "libvirt_domain" "domain-ubuntu" {
     ]
   }
 }
-

@@ -1,4 +1,8 @@
 ### Nomad server configuration ###
+variable "nomad_server_name" {
+  description = "The name of the Nomad server"
+  default = "nomad-server"
+}
 variable "nomad_server_count" {
   description = "The number of Nomad servers to create"
   default = 2
@@ -14,6 +18,10 @@ variable "nomad_server_memory" {
 
 
 ### Nomad client configuration ###
+variable "nomad_client_name" {
+  description = "The name of the Nomad client"
+  default = "nomad-client"
+}
 variable "nomad_client_count" {
   description = "The number of Nomad clients to create"
   default = 2

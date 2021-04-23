@@ -14,9 +14,33 @@ resource "libvirt_volume" "nomad-client-qcow2" {
 resource "libvirt_cloudinit_disk" "client-init" {
   count          = var.nomad_client_count
   name           = "client-init-${count.index}.iso"
-  user_data      = data.template_file.user_data.rendered
-  network_config = data.template_file.network_config.rendered
+  user_data      = data.template_file.client_user_data[count.index].rendered
+  network_config = data.template_file.client_network_config[count.index].rendered
   pool           = libvirt_pool.nomad.name
+}
+
+data "template_file" "client_user_data" {
+  count = var.nomad_client_count
+  template = file("${path.module}/cloud_init.cfg")
+  vars = {
+    HOSTNAME = upper(format(
+      "%v-%v",
+      var.nomad_client_name,
+      count.index
+    ))
+  }
+}
+
+data "template_file" "client_network_config" {
+  count = var.nomad_client_count
+  template = file("${path.module}/network_config.cfg")
+  vars = {
+    HOSTNAME = upper(format(
+      "%v-%v",
+      var.nomad_client_name,
+      count.index
+    ))
+  }
 }
 
 # Create the machine

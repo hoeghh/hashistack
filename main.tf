@@ -20,12 +20,4 @@ resource "libvirt_pool" "nomad" {
   path = "/tmp/terraform-provider-libvirt-pool-nomad"
 }
 
-data "template_file" "user_data" {
-  template = file("${path.module}/cloud_init.cfg")
-}
-
-data "template_file" "network_config" {
-  template = file("${path.module}/network_config.cfg")
-}
-
 

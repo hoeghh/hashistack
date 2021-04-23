@@ -23,8 +23,8 @@ resource "libvirt_cloudinit_disk" "server-init" {
 resource "libvirt_domain" "domain-nomad-server" {
   count  = var.nomad_server_count
   name   = "nomad-server-${count.index}"
-  memory = "512"
-  vcpu   = 1
+  memory = var.nomad_server_memory
+  vcpu   = var.nomad_server_vcpu
 
   cloudinit = libvirt_cloudinit_disk.server-init[count.index].id
 

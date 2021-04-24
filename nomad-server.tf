@@ -15,7 +15,7 @@ resource "libvirt_cloudinit_disk" "server-init" {
   count          = var.nomad_server_count
   name           = "server-init-${count.index}.iso"
   user_data      = data.template_file.server_user_data[count.index].rendered
-  network_config = data.template_file.server_network_config[count.index].rendered
+  #network_config = data.template_file.server_network_config[count.index].rendered
   pool           = libvirt_pool.nomad.name
 }
 
@@ -52,10 +52,18 @@ resource "libvirt_domain" "domain-nomad-server" {
 
   cloudinit = libvirt_cloudinit_disk.server-init[count.index].id
 
+  # network_interface {
+  #   network_name = "default"
+  #   wait_for_lease = true
+  # }
   network_interface {
-    network_name = "default"
+    network_id = libvirt_network.test_network.id
+
+    hostname  = "${var.nomad_server_name}-${count.index}"
+    addresses = ["10.18.3.2"]
     wait_for_lease = true
   }
+
 
   # IMPORTANT: this is a known bug on cloud images, since they expect a console
   # we need to pass it

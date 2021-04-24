@@ -20,4 +20,15 @@ resource "libvirt_pool" "nomad" {
   path = "/tmp/terraform-provider-libvirt-pool-nomad"
 }
 
+resource "libvirt_network" "test_network" {
+   name = "test_network"
+   addresses = ["10.18.3.0/24"]
+   dhcp {
+      enabled = false
+   }
+   dns {
+     enabled = true
+   }
+}
+
 

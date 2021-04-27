@@ -60,7 +60,8 @@ resource "libvirt_domain" "domain-nomad-server" {
     network_id = libvirt_network.test_network.id
 
     hostname  = "${var.nomad_server_name}-${count.index}"
-    addresses = ["10.18.3.2"]
+    #addresses = ["${var.nomad_server_ips[0]}"]
+    addresses = ["${element(var.nomad_server_ips, count.index)}"]
     wait_for_lease = true
   }
 

@@ -3,6 +3,10 @@ variable "nomad_server_name" {
   description = "The name of the Nomad server"
   default = "nomad-server"
 }
+variable "nomad_server_ips" {
+  type    = list(string)
+  default = ["10.18.3.2", "10.18.3.3"]
+}
 variable "nomad_server_count" {
   description = "The number of Nomad servers to create"
   default = 2
@@ -21,6 +25,10 @@ variable "nomad_server_memory" {
 variable "nomad_client_name" {
   description = "The name of the Nomad client"
   default = "nomad-client"
+}
+variable "nomad_client_ips" {
+  type    = list(string)
+  default = ["10.18.3.10"]
 }
 variable "nomad_client_count" {
   description = "The number of Nomad clients to create"

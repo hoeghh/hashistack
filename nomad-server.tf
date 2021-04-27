@@ -1,7 +1,7 @@
 # We fetch the latest ubuntu release image from their mirrors
-resource "libvirt_volume" "nomad-server-qcow2" {
-  count  = var.nomad_server_count
-  name   = "nomad-server-qcow2-${count.index}"
+resource "libvirt_volume" "nomad-server" {
+  count  = length(var.nomad_server_ips)
+  name   = "nomad-server-${count.index}"
   pool   = libvirt_pool.nomad.name
   source = var.os_image
   format = "qcow2"
@@ -12,55 +12,39 @@ resource "libvirt_volume" "nomad-server-qcow2" {
 # Use CloudInit to add our ssh-key to the instance
 # you can add also meta_data field
 resource "libvirt_cloudinit_disk" "server-init" {
-  count          = var.nomad_server_count
+  count          = length(var.nomad_server_ips)
   name           = "server-init-${count.index}.iso"
   user_data      = data.template_file.server_user_data[count.index].rendered
-  #network_config = data.template_file.server_network_config[count.index].rendered
   pool           = libvirt_pool.nomad.name
 }
 
 data "template_file" "server_user_data" {
-  count = var.nomad_server_count
-  template = file("${path.module}/templates/cloud_init.cfg")
+  count = length(var.nomad_server_ips)
+  template = file("${path.module}/templates/cloud_init_server.cfg")
   vars = {
     HOSTNAME = upper(format(
       "%v-%v",
       var.nomad_server_name,
       count.index
-    ))
-  }
-}
-
-data "template_file" "server_network_config" {
-  count = var.nomad_server_count
-  template = file("${path.module}/templates/network_config.cfg")
-  vars = {
-    HOSTNAME = upper(format(
-      "%v-%v",
-      var.nomad_server_name,
-      count.index
-    ))
+    )),
+    NOMAD_SERVER_COUNT = length(var.nomad_server_ips),
+    NOMAD_SERVER_JOIN_IP = element(var.nomad_server_ips, 0),
+    DATACENTER_NAME = var.datacenter_name
   }
 }
 
 # Create the machine
 resource "libvirt_domain" "domain-nomad-server" {
-  count  = var.nomad_server_count
+  count  = length(var.nomad_server_ips)
   name   = "${var.nomad_server_name}-${count.index}"
   memory = var.nomad_server_memory
   vcpu   = var.nomad_server_vcpu
 
   cloudinit = libvirt_cloudinit_disk.server-init[count.index].id
 
-  # network_interface {
-  #   network_name = "default"
-  #   wait_for_lease = true
-  # }
   network_interface {
-    network_id = libvirt_network.test_network.id
-
+    network_id = libvirt_network.nomad_network.id
     hostname  = "${var.nomad_server_name}-${count.index}"
-    #addresses = ["${var.nomad_server_ips[0]}"]
     addresses = ["${element(var.nomad_server_ips, count.index)}"]
     wait_for_lease = true
   }
@@ -82,7 +66,7 @@ resource "libvirt_domain" "domain-nomad-server" {
   }
 
   disk {
-    volume_id = libvirt_volume.nomad-server-qcow2[count.index].id
+    volume_id = libvirt_volume.nomad-server[count.index].id
   }
 
   graphics {
@@ -105,7 +89,7 @@ resource "libvirt_domain" "domain-nomad-server" {
 #      host     = "${var.host}"
 #    }
     inline = [
-      "cloud-init status --wait",
+      "cloud-init status --wait > /dev/null 2>&1",
     ]
   }
 }

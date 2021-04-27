@@ -7,6 +7,10 @@ variable "os_image" {
   description = "Define the source to the os image used by nomad"
   default = "http://cloud-images.ubuntu.com/releases/bionic/release-20191008/ubuntu-18.04-server-cloudimg-amd64.img"
 }
+variable "nomad_pool_path" {
+  description = "Define the path to libvirt pool"
+  default = "/tmp/terraform-provider-libvirt-pool-nomad"
+}
 
 ### Nomad server configuration ###
 variable "nomad_server_name" {

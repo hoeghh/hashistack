@@ -20,7 +20,7 @@ resource "libvirt_cloudinit_disk" "client-init" {
 
 data "template_file" "client_user_data" {
   count = length(var.nomad_client_ips)
-  template = file("${path.module}/templates/cloud_init_client.cfg")
+  template = file("${path.cwd}/templates/cloud_init_client.cfg")
   vars = {
     HOSTNAME = upper(format(
       "%v-%v",

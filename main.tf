@@ -17,7 +17,5 @@ provider "libvirt" {
 resource "libvirt_pool" "nomad" {
   name = "nomad"
   type = "dir"
-  path = "/tmp/terraform-provider-libvirt-pool-nomad"
+  path = var.nomad_pool_path
 }
-
-

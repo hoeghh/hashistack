@@ -2,9 +2,12 @@ datacenter_name = "dc1"
 os_image = "../images/ubuntu-18.04-server-cloudimg-amd64.img"
 
 nomad_server_ips = ["10.18.3.10", "10.18.3.11", "10.18.3.12"]
+nomad_server_enable_client = false
 nomad_server_vcpu = 1
 nomad_server_memory = 512
+nomad_server_disk_size = "4294965097" #4gb
 
 nomad_client_ips = ["10.18.3.20", "10.18.3.21"]
 nomad_client_vcpu = 2
 nomad_client_memory = 1024
+nomad_client_disk_size = "6442447645" #6gb

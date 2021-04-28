@@ -1,10 +1,10 @@
-# We fetch the latest ubuntu release image from their mirrors
 resource "libvirt_volume" "nomad-server" {
-  count  = length(var.nomad_server_ips)
-  name   = "nomad-server-${count.index}"
-  pool   = libvirt_pool.nomad.name
-  source = var.os_image
-  format = "qcow2"
+  count           = length(var.nomad_server_ips)
+  name            = "nomad-server-${count.index}"
+  base_volume_id  = libvirt_volume.os_image_ubuntu.id
+  pool            = libvirt_pool.nomad.name
+  size            = var.nomad_server_disk_size
+  format          = "qcow2"
 }
 
 # for more info about paramater check this out
@@ -29,6 +29,7 @@ data "template_file" "server_user_data" {
     )),
     NOMAD_SERVER_COUNT = length(var.nomad_server_ips),
     NOMAD_SERVER_JOIN_IP = element(var.nomad_server_ips, 0),
+    NOMAD_SERVER_ENABLE_CLIENT = var.nomad_server_enable_client,
     DATACENTER_NAME = var.datacenter_name
   }
 }

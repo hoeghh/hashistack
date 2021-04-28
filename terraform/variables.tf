@@ -22,6 +22,11 @@ variable "nomad_server_ips" {
   type    = list(string)
   default = ["10.18.3.10", "10.18.3.11", "10.18.3.12"]
 }
+variable "nomad_server_enable_client" {
+  description = "Enable the client on Nomad server"
+  type = bool
+  default = false
+}
 variable "nomad_server_vcpu" {
   description = "The number of vcpu to assign Nomad server"
   default = 1
@@ -29,6 +34,10 @@ variable "nomad_server_vcpu" {
 variable "nomad_server_memory" {
   description = "The number of memory to assign Nomad server"
   default = "512"
+}
+variable "nomad_server_disk_size" {
+  description = "The size of the disk on Nomad server"
+  default = "4294965097" #4gb
 }
 
 
@@ -49,4 +58,8 @@ variable "nomad_client_vcpu" {
 variable "nomad_client_memory" {
   description = "The number of memory to assign Nomad client"
   default = "1024"
+}
+variable "nomad_client_disk_size" {
+  description = "The size of the disk on Nomad client"
+  default = "6442447645" #6gb
 }

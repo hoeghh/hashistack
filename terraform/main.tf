@@ -20,6 +20,13 @@ resource "libvirt_pool" "nomad" {
   path = var.nomad_pool_path
 }
 
+resource "libvirt_volume" "os_image_ubuntu" {
+  name   = "os_image_ubuntu"
+  pool   = libvirt_pool.nomad.name
+  source = var.os_image
+  format = "qcow2"
+}
+
 resource "libvirt_network" "nomad_network" {
    name = "nomad_network"
    addresses = ["10.18.3.0/24"]

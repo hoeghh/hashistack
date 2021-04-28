@@ -19,3 +19,16 @@ resource "libvirt_pool" "nomad" {
   type = "dir"
   path = var.nomad_pool_path
 }
+
+resource "libvirt_network" "nomad_network" {
+   name = "nomad_network"
+   addresses = ["10.18.3.0/24"]
+   dhcp {
+      enabled = false
+   }
+   dns {
+     enabled = true
+   }
+}
+
+

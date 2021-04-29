@@ -1,5 +1,6 @@
 datacenter_name = "dc1"
 os_image = "../images/ubuntu-18.04-server-cloudimg-amd64.img"
+nomad_drivers = ["docker", "local_exec", "java"]
 
 nomad_server_ips = ["10.18.3.10", "10.18.3.11", "10.18.3.12"]
 nomad_server_enable_client = false

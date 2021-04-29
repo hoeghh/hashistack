@@ -30,6 +30,9 @@ data "template_file" "server_user_data" {
     NOMAD_SERVER_COUNT = length(var.nomad_server_ips),
     NOMAD_SERVER_JOIN_IP = element(var.nomad_server_ips, 0),
     NOMAD_SERVER_ENABLE_CLIENT = var.nomad_server_enable_client,
+    NOMAD_DRIVER_DOCKER = contains(var.nomad_drivers, "docker"),
+    NOMAD_DRIVER_JAVA = contains(var.nomad_drivers, "java"),
+    NOMAD_DRIVER_RAW_EXEC = contains(var.nomad_drivers, "raw_exec"),
     DATACENTER_NAME = var.datacenter_name
   }
 }

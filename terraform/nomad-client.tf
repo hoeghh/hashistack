@@ -28,6 +28,9 @@ data "template_file" "client_user_data" {
       count.index
     )),
     NOMAD_SERVER_JOIN_IP = element(var.nomad_server_ips, 0),
+    NOMAD_DRIVER_DOCKER = contains(var.nomad_drivers, "docker"),
+    NOMAD_DRIVER_JAVA = contains(var.nomad_drivers, "java"),
+    NOMAD_DRIVER_RAW_EXEC = contains(var.nomad_drivers, "raw_exec"),
     DATACENTER_NAME = var.datacenter_name
   }
 }

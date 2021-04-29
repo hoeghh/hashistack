@@ -11,6 +11,12 @@ variable "nomad_pool_path" {
   description = "Define the path to libvirt pool"
   default = "/tmp/terraform-provider-libvirt-pool-nomad"
 }
+variable "nomad_drivers" {
+  description = "List of drivers that should be enabled on the Nomad clients"
+  type    = list(string)
+  default = ["docker", "raw_exec", "java"]
+}
+
 
 ### Nomad server configuration ###
 variable "nomad_server_name" {

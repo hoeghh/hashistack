@@ -8,7 +8,7 @@ job "consul" {
             
       config {
         command = "consul"
-        args    = ["agent", "-dev", "-ui"]
+        args    = ["agent", "-dev", "-ui", "-client=0.0.0.0"]
       }
       artifact {
         source = "https://releases.hashicorp.com/consul/1.6.2/consul_1.6.2_linux_amd64.zip"
@@ -17,7 +17,7 @@ job "consul" {
         network {
           mbits = 10
           port "http" {
-            to = 8500
+            static = 8500
           }
         }
       }

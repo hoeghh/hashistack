@@ -33,6 +33,7 @@ data "template_file" "server_user_data" {
     NOMAD_DRIVER_DOCKER = contains(var.nomad_drivers, "docker"),
     NOMAD_DRIVER_JAVA = contains(var.nomad_drivers, "java"),
     NOMAD_DRIVER_RAW_EXEC = contains(var.nomad_drivers, "raw_exec"),
+    NODE_IP = "${element(var.nomad_server_ips, count.index)}",
     DATACENTER_NAME = var.datacenter_name
     #CONSUL_AGENT_CA_KEY = file("${path.cwd}${var.consul-agent-ca-key}"),
     #DC1-CLIENT-CONSUL-0 = file("${path.cwd}${var.dc1-client-consul-0}"),

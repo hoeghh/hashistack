@@ -69,3 +69,34 @@ variable "nomad_client_disk_size" {
   description = "The size of the disk on Nomad client"
   default = "6442447645" #6gb
 }
+
+
+### Consul configuration ###
+variable "consul-agent-ca-key" {
+  description = "The CA key used by Consul"
+  default = "/certificates/consul/consul-agent-ca-key.pem"
+}
+variable "consul-agent-ca" {
+  description = "The CA used by Consul"
+  default = "/certificates/consul/consul-agent-ca.pem"
+}
+variable "dc1-client-consul-0" {
+  description = "The TLS cert for DC1"
+  default = "/certificates/consul/dc1-client-consul-0.pem"
+}
+variable "dc1-server-consul-0-key" {
+  description = "The client TLS Key file"
+  default = "/certificates/consul/dc1-server-consul-0-key.pem"
+}
+variable "dc1-client-consul-0-key" {
+  description = "The server TLS key file"
+  default = "/certificates/consul/dc1-client-consul-0-key.pem"
+}
+variable "dc1-server-consul-0" {
+  description = "The server TLS cert"
+  default = "/certificates/consul/dc1-server-consul-0.pem"
+}
+variable "gossip_encryption_key" {
+  description = "The gossip encryption key"
+  default = "/certificates/consul/gossip_encryption_key"
+}

@@ -33,7 +33,14 @@ data "template_file" "server_user_data" {
     NOMAD_DRIVER_DOCKER = contains(var.nomad_drivers, "docker"),
     NOMAD_DRIVER_JAVA = contains(var.nomad_drivers, "java"),
     NOMAD_DRIVER_RAW_EXEC = contains(var.nomad_drivers, "raw_exec"),
-    DATACENTER_NAME = var.datacenter_name
+    DATACENTER_NAME = var.datacenter_name,
+    CONSUL_AGENT_CA_KEY = file("${path.cwd}${var.consul-agent-ca-key}"),
+    DC1-CLIENT-CONSUL-0 = file("${path.cwd}${var.dc1-client-consul-0}"),
+    CONSUL_AGENT_CA = file("${path.cwd}${var.consul-agent-ca}"),
+    DC1_SERVER_CONSUL_0_KEY = file("${path.cwd}${var.dc1-server-consul-0-key}"),
+    DC1_CLIENT_CONSUL_0_KEY = file("${path.cwd}${var.dc1-client-consul-0-key}"),
+    DC1_SERVER_CONSUL_0 = file("${path.cwd}${var.dc1-server-consul-0}"),
+    GOSSIP_ENCRYPTION_KEY = file("${path.cwd}${var.gossip_encryption_key}")
   }
 }
 

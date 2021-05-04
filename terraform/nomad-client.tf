@@ -31,7 +31,9 @@ data "template_file" "client_user_data" {
     NOMAD_DRIVER_DOCKER = contains(var.nomad_drivers, "docker"),
     NOMAD_DRIVER_JAVA = contains(var.nomad_drivers, "java"),
     NOMAD_DRIVER_RAW_EXEC = contains(var.nomad_drivers, "raw_exec"),
-    DATACENTER_NAME = var.datacenter_name
+    DATACENTER_NAME = var.datacenter_name,
+    NODE_IP = "${element(var.nomad_client_ips, count.index)}",
+    GOSSIP_ENCRYPTION_KEY = file("${path.cwd}${var.gossip_encryption_key}")
   }
 }
 

@@ -33,6 +33,9 @@ data "template_file" "client_user_data" {
     NOMAD_DRIVER_RAW_EXEC = contains(var.nomad_drivers, "raw_exec"),
     DATACENTER_NAME = var.datacenter_name,
     NODE_IP = "${element(var.nomad_client_ips, count.index)}",
+    CONSUL_AGENT_CA = indent(6, format ("\n%s", file("${path.cwd}${var.consul-agent-ca}"))),
+    DC1_SERVER_CONSUL_0_KEY = indent(6, format ("\n%s", file("${path.cwd}${var.dc1-server-consul-0-key}"))),
+    DC1_SERVER_CONSUL_0 = indent(6, format ("\n%s", file("${path.cwd}${var.dc1-server-consul-0}"))),
     GOSSIP_ENCRYPTION_KEY = file("${path.cwd}${var.gossip_encryption_key}")
   }
 }

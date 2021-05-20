@@ -11,7 +11,7 @@ job "traefik" {
         static = 8080
       }
       port "https" {
-        static = 8443
+        static = 443
       }
       port "api" {
         static = 8081
@@ -50,7 +50,7 @@ job "traefik" {
     [entryPoints.http]
     address = ":8080"
     [entryPoints.https]
-    address = ":8443"
+    address = ":443"
     [entryPoints.traefik]
     address = ":8081"
 [api]

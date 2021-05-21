@@ -124,7 +124,7 @@ resource "null_resource" "vault-unseal" {
 
     environment = {
       VAULT_IP = "${element(var.nomad_server_ips, count.index)}"
-      VAULT_KEYS = file("${path.cwd}/vault.keys")
+      VAULT_KEYS = "${path.cwd}/vault.keys"
     }
   }
 }

@@ -6,12 +6,13 @@
 #echo "Vault IP: $VAULT_IP"
 #echo $VAULT_KEYS
 
+VAULT_SCHEME="https"
 VAULT_PORT="8200"
-UNSEAL_KEYS=$(echo $VAULT_KEYS | jq -r '.keys[]' )
+UNSEAL_KEYS=$(cat $VAULT_KEYS | jq -r '.keys[]' )
 
 if [ ! -z "$VAULT_KEYS" ] && [ ! -z "$VAULT_IP" ];then
   while IFS= read -r line; do
-    $("vault operator unseal --tls-skip-verify https://${VAULT_IP} $line")
+    vault operator unseal --tls-skip-verify -address=${VAULT_SCHEME}://${VAULT_IP}:$VAULT_PORT $line
   done <<< "$UNSEAL_KEYS"
 else
   echo "Variable VAULT_KEYS OR VAULT_IP is empty!"

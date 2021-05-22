@@ -102,3 +102,29 @@ resource "libvirt_domain" "domain-nomad-server" {
     ]
   }
 }
+
+resource "null_resource" "vault-init" {
+  depends_on = [
+    libvirt_domain.domain-nomad-server
+  ]
+
+  provisioner "local-exec" {
+    command = "curl --request PUT -k -d '{\"secret_shares\": 10, \"secret_threshold\": 5}' https://${element(var.nomad_server_ips, 0)}:8200/v1/sys/init > ${path.cwd}/vault.keys"
+  }
+}
+
+resource "null_resource" "vault-unseal" {
+  count  = length(var.nomad_server_ips)
+  depends_on = [
+    null_resource.vault-init
+  ]
+
+  provisioner "local-exec" {
+    command = "${path.cwd}/scripts/vault-unseal.sh"
+
+    environment = {
+      VAULT_IP = "${element(var.nomad_server_ips, count.index)}"
+      VAULT_KEYS = "${path.cwd}/vault.keys"
+    }
+  }
+}

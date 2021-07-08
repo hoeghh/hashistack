@@ -128,3 +128,37 @@ resource "null_resource" "vault-unseal" {
     }
   }
 }
+
+resource "null_resource" "configure-vault-on-nomad" {
+  count  = length(var.nomad_server_ips)
+  depends_on = [
+    null_resource.vault-init
+  ]
+
+  connection {
+      host     = "${element(var.nomad_server_ips, count.index)}"
+      type     = "ssh"
+      user     = "hashicorp"
+      password = "eficode"
+    }
+
+  provisioner "file" {
+    source      = "${path.cwd}/scripts/configure-vault-on-nomad.sh"
+    destination = "/tmp/configure-vault-on-nomad.sh"
+  }
+
+  provisioner "file" {
+    source      = "${path.cwd}/vault.keys"
+    destination = "/tmp/vault.keys"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/configure-vault-on-nomad.sh",
+      "export NODE_IP=${element(var.nomad_server_ips, count.index)}",
+      "export VAULT_TOKEN=$(cat /tmp/vault.keys | jq -r '.root_token')",
+      "sudo -E bash -c '/tmp/configure-vault-on-nomad.sh'",
+      "sudo systemctl restart nomad",
+    ]
+  }
+}
